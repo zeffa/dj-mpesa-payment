@@ -16,14 +16,18 @@
           with:
             python-version: 3.9
 
-        - name: Install pip and pipenv
+        - name: Install pip and deps
           run: |
             python -m pip install --upgrade pip
+            pip install wheel twine
+
+        - name: Install pipenv
+          run: |
             python -m pip install pipenv
 
         - name: Install project dependencies
           run: |
-            pipenv install --dev --skip-lock
+            pipenv install --dev
 
         - name: Build and publish
           env:
