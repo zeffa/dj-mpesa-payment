@@ -10,6 +10,7 @@ setup(
     author='Elijah Onduso',
     description='Mpesa payment gateway',
     long_description=long_description,
+    long_description_content_type='text/markdown',
     author_email='zeffah.elly@gmail.com',
     packages=find_packages(),
     install_requires=[
