@@ -7,7 +7,6 @@ from rest_framework.response import Response
 
 from . import serializers
 from .helpers import (
-    write_json_to_file,
     check_payment,
     confirm_payment_by_merchant_id,
     confirm_payment_by_transaction_code,
@@ -68,9 +67,7 @@ class MpesaPaymentViewSet(viewsets.ViewSet):
         if transaction_code is not None:
             payment = confirm_payment_by_transaction_code(transaction_code)
         if payment is None:
-            return Response(data={"ResultCode": 1000}, status=status.HTTP_404_NOT_FOUND)
-        payment.is_utilised = True
-        payment.save()
+            return Response(data={"ResultCode": 1}, status=status.HTTP_404_NOT_FOUND)
         serializer = MpesaTransactionSerializer(instance=payment)
         serializer.is_valid(raise_exception=True)
         return Response(data={"ResultCode": 0, "payment": serializer.data}, status=status.HTTP_200_OK)
@@ -78,9 +75,7 @@ class MpesaPaymentViewSet(viewsets.ViewSet):
     @csrf_exempt
     @action(detail=False, methods=['POST'], url_path='transactions', permission_classes=[permissions.AllowAny])
     def insert_payment_transaction(self, request):
-        write_json_to_file(json, request.data, 'request.json')
         data = json.loads(json.dumps(request.data))
-        write_json_to_file(json, data, 'request_dump.json')
 
         serializer = PaymentSuccessSerializer(data=data)
         serializer.is_valid(raise_exception=True)
@@ -117,7 +112,7 @@ class MpesaPaymentViewSet(viewsets.ViewSet):
                 data={"ResultCode": 0, "ResultDesc": "Payment Completed successfully", "payment": serializer.data}
             )
         except ValueError:
-            return Response(data={"ResultCode": 1000, "ResultDesc": "Failed to save payment"})
+            return Response(data={"ResultCode": 1, "ResultDesc": "Failed to save payment"})
 
     @action(
         detail=False,

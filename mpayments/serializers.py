@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from payments import models
+from . import models
 
 
 class CheckoutSerializer(serializers.Serializer):

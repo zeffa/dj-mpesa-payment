@@ -1,6 +1,6 @@
 import time
 
-from payments.models import MpesaTransaction
+from .models import MpesaTransaction
 
 
 def write_json_to_file(json, data, filename):
