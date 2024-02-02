@@ -1,6 +1,8 @@
   name: "Django Mpesa Payment library"
   on:
     push:
+      branches:
+        - main
       tags:
         - '*'
   jobs:
