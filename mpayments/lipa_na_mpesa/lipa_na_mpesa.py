@@ -10,7 +10,7 @@ class LipaNaMpesa:
             'Authorization': "Bearer %s" % self.token
         }
 
-    def stk_push(self, phone_number, amount, a):
+    def stk_push(self, phone_number, amount):
         timestamp = get_timestamp()
         url = '%s/mpesa/stkpush/v1/processrequest' % mpesa_base_url()
         password = get_password(174379, pass_key(), timestamp)

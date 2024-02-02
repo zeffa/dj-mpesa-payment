@@ -20,7 +20,7 @@ def account_reference():
 
 
 def transaction_description():
-    return getattr(settings, 'TRANSACTION_DESCRIPTION', short_code())
+    return getattr(settings, 'TRANSACTION_DESCRIPTION', 'Purchase')
 
 
 def confirmation_callback_url() -> str:
@@ -41,15 +41,15 @@ def basic_authorization(consumer_key, consumer_secret):
     return encoded_string.decode('utf-8')
 
 
-def get_password(short_code, pass_key, timestamp):
-    string_to_encode = "%s%s%s" % (short_code, pass_key, timestamp)
+def get_password(shortcode, passkey, timestamp):
+    string_to_encode = "%s%s%s" % (shortcode, passkey, timestamp)
     encoded_string = base64.b64encode(string_to_encode.encode('utf-8'))
     return encoded_string.decode('utf-8')
 
 
-def auth_response(authorization, base_url, requests):
+def auth_response(authorization, baseurl):
     headers = {'Authorization': "Basic %s" % authorization}
-    url = "%s/oauth/v1/generate?grant_type=client_credentials" % base_url
+    url = "%s/oauth/v1/generate?grant_type=client_credentials" % baseurl
     return requests.request("GET", url=url, headers=headers)
 
 
@@ -68,18 +68,19 @@ def format_phone_number(phone_number) -> string:
 def get_access_token() -> string:
     consumer_key = getattr(settings, 'MPESA_CONSUMER_KEY', None)
     consumer_secret = getattr(settings, 'MPESA_CONSUMER_SECRET', None)
+    mpesa_url = mpesa_base_url()
     if consumer_key is None:
         raise ValueError('MPESA_CONSUMER_KEY is not defined in Django settings.')
 
     if consumer_secret is None:
         raise ValueError('MPESA_CONSUMER_SECRET is not defined in Django settings.')
 
-    if mpesa_base_url() is None:
+    if mpesa_url is None:
         raise ValueError('MPESA_BASE_URL is not defined in Django settings.')
 
     try:
         authorization = basic_authorization(consumer_key, consumer_secret)
-        response = auth_response(authorization, mpesa_base_url, requests)
+        response = auth_response(authorization, mpesa_url)
         if response.status_code == 200:
             json_data = response.json()
             return json_data['access_token']
