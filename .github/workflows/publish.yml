@@ -4,7 +4,7 @@
       tags:
         - '*'
   jobs:
-    build:
+    publish:
       runs-on: ubuntu-latest
 
       steps:
@@ -29,26 +29,12 @@
           run: |
             pipenv install --dev
 
-        - name: Build package
+        - name: Build and publish
           env:
             TWINE_USERNAME: __token__
             TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+
           run: |
             python setup.py sdist bdist_wheel
 #            twine upload dist/*
             twine upload --repository-url https://test.pypi.org/legacy/ dist/*
-
-#    pypi-publish:
-#      name: Upload release to PyPI
-#      runs-on: ubuntu-latest
-#      environment:
-#        name: env
-#        url: https://pypi.org/p/dj-mpesa-payment
-#      permissions:
-#        id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
-#      steps:
-#        # retrieve your distributions here
-#        - name: Publish package distributions to PyPI
-#          uses: pypa/gh-action-pypi-publish@release/v1
-#          with:
-#            repository-url: https://test.pypi.org/legacy/
