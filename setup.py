@@ -6,7 +6,7 @@ with open('README.md', 'r', encoding='utf-8') as f:
 
 setup(
     name='dj-mpesa-payment',
-    version='0.0.1',
+    version='0.0.2',
     author='Elijah Onduso',
     description='Mpesa payment gateway',
     long_description=long_description,
